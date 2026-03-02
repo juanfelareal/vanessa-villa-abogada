@@ -159,38 +159,61 @@
         @keyframes pillFadeIn { to { opacity: 1; transform: translateY(0); } }
 
         @media (max-width: 768px) {
-            h1 { font-size: 32px; letter-spacing: -1.5px; margin-bottom: 20px; }
-            h2 { font-size: 26px; letter-spacing: -1px; margin-bottom: 20px; }
+            h1 { font-size: 32px; letter-spacing: -1.5px; margin-bottom: 16px; }
+            h2 { font-size: 26px; letter-spacing: -1px; margin-bottom: 16px; }
             h3 { font-size: 20px; }
-            .slide { padding: 60px 20px 20px !important; overflow-y: auto; }
-            .slide-portada, .slide-cierre { justify-content: center; }
-            .subtitle { font-size: 16px; max-width: 100%; }
-            .section-tag { font-size: 10px; letter-spacing: 3px; padding: 6px 14px; margin-bottom: 16px; }
-            .pain-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
+            .slide {
+                padding: 50px 20px 80px !important;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .slide-portada, .slide-cierre {
+                justify-content: center;
+                padding-bottom: 100px !important;
+            }
+            .subtitle { font-size: 15px; max-width: 100%; }
+            .section-tag { font-size: 10px; letter-spacing: 3px; padding: 6px 14px; margin-bottom: 12px; }
+            .pain-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 16px; }
             .pain-card { flex-direction: row; text-align: left; padding: 18px 16px; }
             .pain-icon { width: 36px; height: 36px; font-size: 16px; border-radius: 10px; }
             .pain-text { font-size: 14px; }
-            .motor-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 20px; }
+            .motor-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
             .motor-card { padding: 20px 16px; gap: 8px; }
             .motor-letter { font-size: 32px; }
-            .motor-name { font-size: 14px; }
+            .motor-name { font-size: 13px; }
             .motor-concept { font-size: 10px; }
             .motor-desc { font-size: 12px; }
-            .roadmap { grid-template-columns: 1fr; gap: 16px; margin-top: 20px; }
-            .roadmap-card { padding: 24px 20px; }
-            .roadmap-title { font-size: 18px; }
-            .roadmap-list li { font-size: 13px; }
-            .includes-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+            .roadmap { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+            .roadmap-card { padding: 20px 16px; }
+            .roadmap-title { font-size: 16px; margin-bottom: 12px; }
+            .roadmap-list li { font-size: 12px; }
+            .roadmap-list { gap: 8px; }
+            .includes-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 16px; }
             .include-item { padding: 16px 18px; }
             .include-text { font-size: 14px; }
-            .pricing-card { padding: 36px 28px; }
-            .pricing-amount { font-size: 42px; }
+            .pricing-card { padding: 32px 24px; margin-top: 20px; }
+            .pricing-amount { font-size: 40px; }
+            .pricing-name { font-size: 11px; letter-spacing: 2px; margin-bottom: 12px; }
+            .pricing-period { font-size: 14px; }
+            .pricing-detail { font-size: 14px; }
+            .pricing-divider { margin: 18px auto; }
+            .pricing-note p { font-size: 13px; }
             .hero-pills { flex-direction: column; align-items: center; gap: 10px; margin-top: 24px; }
             .hero-pill { font-size: 13px; padding: 10px 18px; }
             .navigation { bottom: 16px; right: 16px; gap: 8px; }
-            .nav-btn { width: 38px; height: 38px; font-size: 16px; border-radius: 10px; }
+            .nav-btn { width: 42px; height: 42px; font-size: 18px; border-radius: 10px; }
             .slide-counter { bottom: 22px; left: 16px; font-size: 11px; }
             .fullscreen-hint { display: none; }
+        }
+
+        /* Safe area for notched iPhones */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .navigation { bottom: calc(16px + env(safe-area-inset-bottom)); }
+            .slide-counter { bottom: calc(22px + env(safe-area-inset-bottom)); }
+            .progress { bottom: env(safe-area-inset-bottom); }
+            @media (max-width: 768px) {
+                .slide { padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important; }
+            }
         }
     </style>
 </head>
@@ -376,7 +399,7 @@
                 <div class="pricing-badge">&#9889; Precio de lanzamiento</div>
                 <div class="pricing-name">Acompa&ntilde;amiento completo</div>
                 <div class="pricing-amount">$1.400.000</div>
-                <div class="pricing-period">+IVA &middot; pago &uacute;nico</div>
+                <div class="pricing-period">Pago &uacute;nico</div>
                 <div class="pricing-divider"></div>
                 <div class="pricing-detail"><strong>1 mes</strong> de acompa&ntilde;amiento estrat&eacute;gico personalizado</div>
                 <div class="pricing-detail"><strong>4 asesor&iacute;as</strong> te&oacute;rico-pr&aacute;cticas semanales</div>
@@ -438,9 +461,34 @@
             else if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); }
         });
 
+        // Click to advance (desktop only)
         document.querySelector('.presentation').addEventListener('click', (e) => {
-            if (!e.target.closest('.navigation') && !e.target.closest('a')) nextSlide();
+            if (!e.target.closest('.navigation') && !e.target.closest('a') && window.innerWidth > 768) nextSlide();
         });
+
+        // Touch swipe support for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            if (e.target.closest('.navigation') || e.target.closest('a')) return;
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            const diffX = touchStartX - touchEndX;
+            const diffY = Math.abs(touchStartY - e.changedTouches[0].screenY);
+            // Only trigger if horizontal swipe is dominant (not scrolling)
+            if (Math.abs(diffX) > 50 && diffY < 80) {
+                if (diffX > 0) nextSlide();
+                else prevSlide();
+            }
+        }, { passive: true });
 
         function toggleFullscreen() {
             if (!document.fullscreenElement) document.documentElement.requestFullscreen();
